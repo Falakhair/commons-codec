@@ -42,8 +42,4 @@ public class Resources {
         }
         return inputStream;
     }
-    @Deprecated
-    public Resources() {
-        // empty
-    }
 }
