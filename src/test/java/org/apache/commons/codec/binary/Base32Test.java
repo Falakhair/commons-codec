@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.codec.binary;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -291,6 +292,22 @@ public class Base32Test {
     @Test
     public void testBase32HexImpossibleSamples() {
         testImpossibleCases(new Base32(0, null, true, BaseNCodec.PAD_DEFAULT, CodecPolicy.STRICT), BASE32HEX_IMPOSSIBLE_CASES);
+        // @formatter:off
+        testImpossibleCases(Base32.builder()
+                .setHexEncodeTable(true)
+                .setDecodingPolicy(CodecPolicy.STRICT)
+                .get(), BASE32HEX_IMPOSSIBLE_CASES);
+        // @formatter:on
+        // overrides, last set wins
+        // @formatter:off
+        testImpossibleCases(Base32.builder()
+                .setHexDecodeTable(false)
+                .setHexDecodeTable(true)
+                .setHexEncodeTable(false)
+                .setHexEncodeTable(true)
+                .setDecodingPolicy(CodecPolicy.STRICT)
+                .get(), BASE32HEX_IMPOSSIBLE_CASES);
+        // @formatter:on
     }
 
     @Test

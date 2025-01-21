@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.codec.binary;
 
 import java.util.Objects;
@@ -74,6 +75,33 @@ public class Base32 extends BaseNCodec {
             return new Base32(getLineLength(), getLineSeparator(), getEncodeTable(), getPadding(), getDecodingPolicy());
         }
 
+        /**
+         * Sets the decode table to use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
+         * <p>
+         * This overrides a value previously set with {@link #setEncodeTable(byte...)}.
+         * </p>
+         *
+         * @param useHex use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
+         * @return this instance.
+         * @since 1.18.0
+         */
+        public Builder setHexDecodeTable(final boolean useHex) {
+            return setEncodeTable(decodeTable(useHex));
+        }
+
+        /**
+         * Sets the encode table to use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
+         * <p>
+         * This overrides a value previously set with {@link #setEncodeTable(byte...)}.
+         * </p>
+         *
+         * @param useHex use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
+         * @return this instance.
+         * @since 1.18.0
+         */
+        public Builder setHexEncodeTable(final boolean useHex) {
+            return setEncodeTable(encodeTable(useHex));
+        }
     }
 
     /**
@@ -161,6 +189,10 @@ public class Base32 extends BaseNCodec {
     /** Mask used to extract 1 bits, used when decoding final trailing character. */
     private static final long MASK_1BITS = 0x01L;
 
+    // The static final fields above are used for the original static byte[] methods on Base32.
+    // The private member fields below are used with the new streaming approach, which requires
+    // some state be preserved between calls of encode() and decode().
+
     /**
      * Creates a new Builder.
      *
@@ -171,9 +203,13 @@ public class Base32 extends BaseNCodec {
         return new Builder();
     }
 
-    // The static final fields above are used for the original static byte[] methods on Base32.
-    // The private member fields below are used with the new streaming approach, which requires
-    // some state be preserved between calls of encode() and decode().
+    private static byte[] decodeTable(final boolean useHex) {
+        return useHex ? HEX_DECODE_TABLE : DECODE_TABLE;
+    }
+
+    private static byte[] encodeTable(final boolean useHex) {
+        return useHex ? HEX_ENCODE_TABLE : ENCODE_TABLE;
+    }
 
     /**
      * Decode table to use.
@@ -325,14 +361,14 @@ public class Base32 extends BaseNCodec {
      * @param lineLength     Each line of encoded data will be at most of the given length (rounded down to the nearest multiple of 8). If lineLength &lt;= 0,
      *                       then the output will not be divided into lines (chunks). Ignored when decoding.
      * @param lineSeparator  Each line of encoded data will end with this sequence of bytes.
-     * @param useHex         if {@code true}, then use Base32 Hex alphabet, otherwise use Base32 alphabet
+     * @param useHex         use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
      * @param padding        padding byte.
      * @param decodingPolicy The decoding policy.
      * @throws IllegalArgumentException Thrown when the {@code lineSeparator} contains Base32 characters. Or the lineLength &gt; 0 and lineSeparator is null.
      * @since 1.15
      */
     public Base32(final int lineLength, final byte[] lineSeparator, final boolean useHex, final byte padding, final CodecPolicy decodingPolicy) {
-        this(lineLength, lineSeparator, useHex ? HEX_ENCODE_TABLE : ENCODE_TABLE, padding, decodingPolicy);
+        this(lineLength, lineSeparator, encodeTable(useHex), padding, decodingPolicy);
     }
 
     /**
@@ -384,7 +420,7 @@ public class Base32 extends BaseNCodec {
      * inAvail set to "-1" to alert decoder that EOF has been reached. The "-1" call is not necessary when decoding, but it doesn't hurt, either.
      * </p>
      * <p>
-     * Ignores all non-Base32 characters. This is how chunked (e.g. 76 character) data is handled, since CR and LF are silently ignored, but has implications
+     * Ignores all non-Base32 characters. This is how chunked (for example 76 character) data is handled, since CR and LF are silently ignored, but has implications
      * for other bytes, too. This method subscribes to the garbage-in, garbage-out philosophy: it will not check the provided data for validity.
      * </p>
      * <p>
