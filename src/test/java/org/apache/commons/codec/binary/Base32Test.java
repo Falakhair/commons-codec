@@ -16,7 +16,6 @@
  */
 
 package org.apache.commons.codec.binary;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,16 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
 import org.apache.commons.codec.CodecPolicy;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Test;
-
 public class Base32Test {
 
     private static final Charset CHARSET_UTF8 = StandardCharsets.UTF_8;
