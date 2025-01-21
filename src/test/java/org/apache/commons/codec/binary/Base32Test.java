@@ -42,13 +42,13 @@ public class Base32Test {
     /** RFC 4648. */
     // @formatter:off
     private static final String [][] BASE32_TEST_CASES = {
-        { ""       , "" },
-        { "f"      , "MY======" },
-        { "fo"     , "MZXQ====" },
-        { "foo"    , "MZXW6===" },
-        { "foob"   , "MZXW6YQ=" },
-        { "fooba"  , "MZXW6YTB" },
-        { "foobar" , "MZXW6YTBOI======" }
+            { ""       , "" },
+            { "f"      , "MY======" },
+            { "fo"     , "MZXQ====" },
+            { "foo"    , "MZXW6===" },
+            { "foob"   , "MZXW6YQ=" },
+            { "fooba"  , "MZXW6YTB" },
+            { "foobar" , "MZXW6YTBOI======" }
     };
     // @formatter:on
 
@@ -58,32 +58,32 @@ public class Base32Test {
      */
     // @formatter:off
     static final String[] BASE32_IMPOSSIBLE_CASES = {
-        "MC======",
-        "MZXE====",
-        "MZXWB===",
-        "MZXW6YB=",
-        "MZXW6YTBOC======",
-        "AB======"
-        };
+            "MC======",
+            "MZXE====",
+            "MZXWB===",
+            "MZXW6YB=",
+            "MZXW6YTBOC======",
+            "AB======"
+    };
     // @formatter:on
 
     // @formatter:off
     private static final String[] BASE32_IMPOSSIBLE_CASES_CHUNKED = {
-        "M2======\r\n",
-        "MZX0====\r\n",
-        "MZXW0===\r\n",
-        "MZXW6Y2=\r\n",
-        "MZXW6YTBO2======\r\n"
+            "M2======\r\n",
+            "MZX0====\r\n",
+            "MZXW0===\r\n",
+            "MZXW6Y2=\r\n",
+            "MZXW6YTBO2======\r\n"
     };
     // @formatter:on
 
     // @formatter:off
     private static final String[] BASE32HEX_IMPOSSIBLE_CASES = {
-        "C2======",
-        "CPN4====",
-        "CPNM1===",
-        "CPNMUO1=",
-        "CPNMUOJ1E2======"
+            "C2======",
+            "CPN4====",
+            "CPNM1===",
+            "CPNMUO1=",
+            "CPNMUOJ1E2======"
     };
     // @formatter:on
 
@@ -109,11 +109,11 @@ public class Base32Test {
         try {
             BASE32_BINARY_TEST_CASES = new Object[][] {
                     new Object[] { hex.decode("623a01735836e9a126e12fbf95e013ee6892997c"),
-                                   "MI5AC42YG3U2CJXBF67ZLYAT5ZUJFGL4" },
+                            "MI5AC42YG3U2CJXBF67ZLYAT5ZUJFGL4" },
                     new Object[] { hex.decode("623a01735836e9a126e12fbf95e013ee6892997c"),
-                                   "mi5ac42yg3u2cjxbf67zlyat5zujfgl4" },
+                            "mi5ac42yg3u2cjxbf67zlyat5zujfgl4" },
                     new Object[] { hex.decode("739ce42108"),
-                                   "OOOOIIII" }
+                            "OOOOIIII" }
             };
         } catch (final DecoderException de) {
             throw new AssertionError(":(", de);
@@ -122,37 +122,37 @@ public class Base32Test {
 
     // @formatter:off
     private static final String [][] BASE32HEX_TEST_CASES = { // RFC 4648
-        { ""       , "" },
-        { "f"      , "CO======" },
-        { "fo"     , "CPNG====" },
-        { "foo"    , "CPNMU===" },
-        { "foob"   , "CPNMUOG=" },
-        { "fooba"  , "CPNMUOJ1" },
-        { "foobar" , "CPNMUOJ1E8======" }
+            { ""       , "" },
+            { "f"      , "CO======" },
+            { "fo"     , "CPNG====" },
+            { "foo"    , "CPNMU===" },
+            { "foob"   , "CPNMUOG=" },
+            { "fooba"  , "CPNMUOJ1" },
+            { "foobar" , "CPNMUOJ1E8======" }
     };
     // @formatter:on
 
     // @formatter:off
     private static final String [][] BASE32_TEST_CASES_CHUNKED = { //Chunked
-        { ""       , "" },
-        { "f"      , "MY======\r\n" },
-        { "fo"     , "MZXQ====\r\n" },
-        { "foo"    , "MZXW6===\r\n" },
-        { "foob"   , "MZXW6YQ=\r\n" },
-        { "fooba"  , "MZXW6YTB\r\n" },
-        { "foobar" , "MZXW6YTBOI======\r\n" }
+            { ""       , "" },
+            { "f"      , "MY======\r\n" },
+            { "fo"     , "MZXQ====\r\n" },
+            { "foo"    , "MZXW6===\r\n" },
+            { "foob"   , "MZXW6YQ=\r\n" },
+            { "fooba"  , "MZXW6YTB\r\n" },
+            { "foobar" , "MZXW6YTBOI======\r\n" }
     };
     // @formatter:on
 
     // @formatter:off
     private static final String [][] BASE32_PAD_TEST_CASES = { // RFC 4648
-        { ""       , "" },
-        { "f"      , "MY%%%%%%" },
-        { "fo"     , "MZXQ%%%%" },
-        { "foo"    , "MZXW6%%%" },
-        { "foob"   , "MZXW6YQ%" },
-        { "fooba"  , "MZXW6YTB" },
-        { "foobar" , "MZXW6YTBOI%%%%%%" }
+            { ""       , "" },
+            { "f"      , "MY%%%%%%" },
+            { "fo"     , "MZXQ%%%%" },
+            { "foo"    , "MZXW6%%%" },
+            { "foob"   , "MZXW6YQ%" },
+            { "fooba"  , "MZXW6YTB" },
+            { "foobar" , "MZXW6YTBOI%%%%%%" }
     };
     // @formatter:on
 
@@ -292,22 +292,6 @@ public class Base32Test {
     @Test
     public void testBase32HexImpossibleSamples() {
         testImpossibleCases(new Base32(0, null, true, BaseNCodec.PAD_DEFAULT, CodecPolicy.STRICT), BASE32HEX_IMPOSSIBLE_CASES);
-        // @formatter:off
-        testImpossibleCases(Base32.builder()
-                .setHexEncodeTable(true)
-                .setDecodingPolicy(CodecPolicy.STRICT)
-                .get(), BASE32HEX_IMPOSSIBLE_CASES);
-        // @formatter:on
-        // overrides, last set wins
-        // @formatter:off
-        testImpossibleCases(Base32.builder()
-                .setHexDecodeTable(false)
-                .setHexDecodeTable(true)
-                .setHexEncodeTable(false)
-                .setHexEncodeTable(true)
-                .setDecodingPolicy(CodecPolicy.STRICT)
-                .get(), BASE32HEX_IMPOSSIBLE_CASES);
-        // @formatter:on
     }
 
     @Test

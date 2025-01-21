@@ -75,33 +75,6 @@ public class Base32 extends BaseNCodec {
             return new Base32(getLineLength(), getLineSeparator(), getEncodeTable(), getPadding(), getDecodingPolicy());
         }
 
-        /**
-         * Sets the decode table to use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
-         * <p>
-         * This overrides a value previously set with {@link #setEncodeTable(byte...)}.
-         * </p>
-         *
-         * @param useHex use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
-         * @return this instance.
-         * @since 1.18.0
-         */
-        public Builder setHexDecodeTable(final boolean useHex) {
-            return setEncodeTable(decodeTable(useHex));
-        }
-
-        /**
-         * Sets the encode table to use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
-         * <p>
-         * This overrides a value previously set with {@link #setEncodeTable(byte...)}.
-         * </p>
-         *
-         * @param useHex use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
-         * @return this instance.
-         * @since 1.18.0
-         */
-        public Builder setHexEncodeTable(final boolean useHex) {
-            return setEncodeTable(encodeTable(useHex));
-        }
     }
 
     /**
@@ -118,14 +91,14 @@ public class Base32 extends BaseNCodec {
      */
     // @formatter:off
     private static final byte[] DECODE_TABLE = {
-         //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+            //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 20-2f
             -1, -1, 26, 27, 28, 29, 30, 31, -1, -1, -1, -1, -1, -1, -1, -1, // 30-3f 2-7
             -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 40-4f A-O
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,                     // 50-5a P-Z
-                                                        -1, -1, -1, -1, -1, // 5b-5f
+            -1, -1, -1, -1, -1, // 5b-5f
             -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 60-6f a-o
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,                     // 70-7a p-z
     };
@@ -149,14 +122,14 @@ public class Base32 extends BaseNCodec {
      */
     // @formatter:off
     private static final byte[] HEX_DECODE_TABLE = {
-         //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+            //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 20-2f
-             0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, // 30-3f 0-9
+            0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, // 30-3f 0-9
             -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, // 40-4f A-O
             25, 26, 27, 28, 29, 30, 31,                                     // 50-56 P-V
-                                        -1, -1, -1, -1, -1, -1, -1, -1, -1, // 57-5f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, // 57-5f
             -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, // 60-6f a-o
             25, 26, 27, 28, 29, 30, 31                                      // 70-76 p-v
     };
@@ -189,10 +162,6 @@ public class Base32 extends BaseNCodec {
     /** Mask used to extract 1 bits, used when decoding final trailing character. */
     private static final long MASK_1BITS = 0x01L;
 
-    // The static final fields above are used for the original static byte[] methods on Base32.
-    // The private member fields below are used with the new streaming approach, which requires
-    // some state be preserved between calls of encode() and decode().
-
     /**
      * Creates a new Builder.
      *
@@ -203,13 +172,9 @@ public class Base32 extends BaseNCodec {
         return new Builder();
     }
 
-    private static byte[] decodeTable(final boolean useHex) {
-        return useHex ? HEX_DECODE_TABLE : DECODE_TABLE;
-    }
-
-    private static byte[] encodeTable(final boolean useHex) {
-        return useHex ? HEX_ENCODE_TABLE : ENCODE_TABLE;
-    }
+    // The static final fields above are used for the original static byte[] methods on Base32.
+    // The private member fields below are used with the new streaming approach, which requires
+    // some state be preserved between calls of encode() and decode().
 
     /**
      * Decode table to use.
@@ -361,14 +326,14 @@ public class Base32 extends BaseNCodec {
      * @param lineLength     Each line of encoded data will be at most of the given length (rounded down to the nearest multiple of 8). If lineLength &lt;= 0,
      *                       then the output will not be divided into lines (chunks). Ignored when decoding.
      * @param lineSeparator  Each line of encoded data will end with this sequence of bytes.
-     * @param useHex         use Base32 hexadecimal if {@code true}, otherwise use the Base32 alphabet.
+     * @param useHex         if {@code true}, then use Base32 Hex alphabet, otherwise use Base32 alphabet
      * @param padding        padding byte.
      * @param decodingPolicy The decoding policy.
      * @throws IllegalArgumentException Thrown when the {@code lineSeparator} contains Base32 characters. Or the lineLength &gt; 0 and lineSeparator is null.
      * @since 1.15
      */
     public Base32(final int lineLength, final byte[] lineSeparator, final boolean useHex, final byte padding, final CodecPolicy decodingPolicy) {
-        this(lineLength, lineSeparator, encodeTable(useHex), padding, decodingPolicy);
+        this(lineLength, lineSeparator, useHex ? HEX_ENCODE_TABLE : ENCODE_TABLE, padding, decodingPolicy);
     }
 
     /**
@@ -420,7 +385,7 @@ public class Base32 extends BaseNCodec {
      * inAvail set to "-1" to alert decoder that EOF has been reached. The "-1" call is not necessary when decoding, but it doesn't hurt, either.
      * </p>
      * <p>
-     * Ignores all non-Base32 characters. This is how chunked (for example 76 character) data is handled, since CR and LF are silently ignored, but has implications
+     * Ignores all non-Base32 characters. This is how chunked (e.g. 76 character) data is handled, since CR and LF are silently ignored, but has implications
      * for other bytes, too. This method subscribes to the garbage-in, garbage-out philosophy: it will not check the provided data for validity.
      * </p>
      * <p>
@@ -480,49 +445,49 @@ public class Base32 extends BaseNCodec {
             // See the encode(byte[]) method EOF section.
             switch (context.modulus) {
 //              case 0 : // impossible, as excluded above
-            case 1: // 5 bits - either ignore entirely, or raise an exception
-                validateTrailingCharacters();
-            case 2: // 10 bits, drop 2 and output one byte
-                validateCharacter(MASK_2BITS, context);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 2 & MASK_8BITS);
-                break;
-            case 3: // 15 bits, drop 7 and output 1 byte, or raise an exception
-                validateTrailingCharacters();
-                // Not possible from a valid encoding but decode anyway
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 7 & MASK_8BITS);
-                break;
-            case 4: // 20 bits = 2*8 + 4
-                validateCharacter(MASK_4BITS, context);
-                context.lbitWorkArea = context.lbitWorkArea >> 4; // drop 4 bits
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
-                break;
-            case 5: // 25 bits = 3*8 + 1
-                validateCharacter(MASK_1BITS, context);
-                context.lbitWorkArea = context.lbitWorkArea >> 1;
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
-                break;
-            case 6: // 30 bits = 3*8 + 6, or raise an exception
-                validateTrailingCharacters();
-                // Not possible from a valid encoding but decode anyway
-                context.lbitWorkArea = context.lbitWorkArea >> 6;
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
-                break;
-            case 7: // 35 bits = 4*8 +3
-                validateCharacter(MASK_3BITS, context);
-                context.lbitWorkArea = context.lbitWorkArea >> 3;
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 24 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
-                buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
-                break;
-            default:
-                // modulus can be 0-7, and we excluded 0,1 already
-                throw new IllegalStateException("Impossible modulus " + context.modulus);
+                case 1: // 5 bits - either ignore entirely, or raise an exception
+                    validateTrailingCharacters();
+                case 2: // 10 bits, drop 2 and output one byte
+                    validateCharacter(MASK_2BITS, context);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 2 & MASK_8BITS);
+                    break;
+                case 3: // 15 bits, drop 7 and output 1 byte, or raise an exception
+                    validateTrailingCharacters();
+                    // Not possible from a valid encoding but decode anyway
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 7 & MASK_8BITS);
+                    break;
+                case 4: // 20 bits = 2*8 + 4
+                    validateCharacter(MASK_4BITS, context);
+                    context.lbitWorkArea = context.lbitWorkArea >> 4; // drop 4 bits
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
+                    break;
+                case 5: // 25 bits = 3*8 + 1
+                    validateCharacter(MASK_1BITS, context);
+                    context.lbitWorkArea = context.lbitWorkArea >> 1;
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
+                    break;
+                case 6: // 30 bits = 3*8 + 6, or raise an exception
+                    validateTrailingCharacters();
+                    // Not possible from a valid encoding but decode anyway
+                    context.lbitWorkArea = context.lbitWorkArea >> 6;
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
+                    break;
+                case 7: // 35 bits = 4*8 +3
+                    validateCharacter(MASK_3BITS, context);
+                    context.lbitWorkArea = context.lbitWorkArea >> 3;
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 24 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 16 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea >> 8 & MASK_8BITS);
+                    buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
+                    break;
+                default:
+                    // modulus can be 0-7, and we excluded 0,1 already
+                    throw new IllegalStateException("Impossible modulus " + context.modulus);
             }
         }
     }
@@ -554,50 +519,50 @@ public class Base32 extends BaseNCodec {
             final byte[] buffer = ensureBufferSize(encodeSize, context);
             final int savedPos = context.pos;
             switch (context.modulus) { // % 5
-            case 0:
-                break;
-            case 1: // Only 1 octet; take top 5 bits then remainder
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 2) & MASK_5BITS]; // 5-3=2
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                break;
-            case 2: // 2 octets = 16 bits to use
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 11) & MASK_5BITS]; // 16-1*5 = 11
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 6) & MASK_5BITS]; // 16-2*5 = 6
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                break;
-            case 3: // 3 octets = 24 bits to use
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 19) & MASK_5BITS]; // 24-1*5 = 19
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 14) & MASK_5BITS]; // 24-2*5 = 14
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 9) & MASK_5BITS]; // 24-3*5 = 9
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                buffer[context.pos++] = pad;
-                break;
-            case 4: // 4 octets = 32 bits to use
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 27) & MASK_5BITS]; // 32-1*5 = 27
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 22) & MASK_5BITS]; // 32-2*5 = 22
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 17) & MASK_5BITS]; // 32-3*5 = 17
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 12) & MASK_5BITS]; // 32-4*5 = 12
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 7) & MASK_5BITS]; // 32-5*5 = 7
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 = 2
-                buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
-                buffer[context.pos++] = pad;
-                break;
-            default:
-                throw new IllegalStateException("Impossible modulus " + context.modulus);
+                case 0:
+                    break;
+                case 1: // Only 1 octet; take top 5 bits then remainder
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 2) & MASK_5BITS]; // 5-3=2
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    break;
+                case 2: // 2 octets = 16 bits to use
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 11) & MASK_5BITS]; // 16-1*5 = 11
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 6) & MASK_5BITS]; // 16-2*5 = 6
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    break;
+                case 3: // 3 octets = 24 bits to use
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 19) & MASK_5BITS]; // 24-1*5 = 19
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 14) & MASK_5BITS]; // 24-2*5 = 14
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 9) & MASK_5BITS]; // 24-3*5 = 9
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    buffer[context.pos++] = pad;
+                    break;
+                case 4: // 4 octets = 32 bits to use
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 27) & MASK_5BITS]; // 32-1*5 = 27
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 22) & MASK_5BITS]; // 32-2*5 = 22
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 17) & MASK_5BITS]; // 32-3*5 = 17
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 12) & MASK_5BITS]; // 32-4*5 = 12
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 7) & MASK_5BITS]; // 32-5*5 = 7
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 = 2
+                    buffer[context.pos++] = encodeTable[(int) (context.lbitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
+                    buffer[context.pos++] = pad;
+                    break;
+                default:
+                    throw new IllegalStateException("Impossible modulus " + context.modulus);
             }
             context.currentLinePos += context.pos - savedPos; // keep track of current line position
             // if currentPos == 0 we are at the start of a line, so don't add CRLF
