@@ -118,10 +118,8 @@ public class Charsets {
      * Every implementation of the Java platform is required to support this character encoding.
      * </p>
      *
-     * @deprecated Use {@link java.nio.charset.StandardCharsets#UTF_16LE} instead.
      * @see <a href="https://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
      */
-    @Deprecated
     public static final Charset UTF_16LE = StandardCharsets.UTF_16LE;
 
     /**
