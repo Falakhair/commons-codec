@@ -155,8 +155,5 @@ public class Charsets {
     public static Charset toCharset(final String charset) {
         return charset == null ? Charset.defaultCharset() : Charset.forName(charset);
     }
-    @Deprecated
-    public Charsets() {
-        // empty
-    }
+
 }
